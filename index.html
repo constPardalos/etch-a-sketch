@@ -8,6 +8,30 @@
 </head>
 <body>
 
+<h1>Etch-A-Sketch</h1>
+
+<div class="mode">
+    <h2>Mode</h2>
+    <button data-mode="modeClassic">Classic</button>
+    <button data-mode="modeGhost">Ghost</button>
+    <button data-mode="modeColor">Color</button>
+    <button data-mode="modeRainbow">Rainbow</button>
+    <button data-mode="modePicture">Picture</button>
+</div>
+
+<div class="tools">
+    <h2>Tools</h2>
+    <input id="custom-color" type="color">
+
+</div>
+
+<div class="settings">
+    <h2>Settings</h2>
+    <input type="range" class="grid-size" min="8" max="100" step="2" value="16">
+    <button value="submit">Generate</button>
+    <button class="clear">Clear</button>
+</div>
+
 <div class="grid-container">
     <div class="grid"></div>
 </div>
