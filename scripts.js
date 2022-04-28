@@ -2,6 +2,10 @@
 // INITIATORS & SETTINGS
 // ========================================================
 
+const copyYear = document.querySelector('.year');
+const currentYear = new Date().getFullYear();
+copyYear.textContent = " " + currentYear + " ";
+
 // Mouse tracking
 let mouseDown = false;
 
@@ -346,8 +350,7 @@ function hexToRGB(h) {
 }
 
 function getRGB(str) {
-    const match = str.match(/rgba?\((\d{1,3}), ?(\d{1,3}), ?(\d{1,3})\)?(?:, ?(\d(?:\.\d?))\))?/);
-    return match;
+    return str.match(/rgba?\((\d{1,3}), ?(\d{1,3}), ?(\d{1,3})\)?(?:, ?(\d(?:\.\d?))\))?/);
 }
 
 function shadeRGB(rgb) {
