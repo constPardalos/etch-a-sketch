@@ -25,6 +25,7 @@ h1 {
     display: flex;
     align-items: stretch;
     justify-content: center;
+    user-select: none;
 }
 
 /* SETTINGS
@@ -137,6 +138,7 @@ input[disabled] + .toggle:hover {
     position: relative;
     height: 40px;
     width: 40px;
+    transition: all 0.2s linear;
     -webkit-appearance: none;
 }
 
@@ -166,6 +168,17 @@ input[disabled] + .toggle:hover {
     min-width: 72px;
     text-align: left;
     vertical-align: middle;
+    transition: all 0.2s linear;
+}
+
+.color-picker:disabled {
+    cursor: default;
+    opacity: 0.3;
+}
+
+.color-picker:disabled + .color-value {
+    cursor: default;
+    opacity: 0.3;
 }
 
 /* Settings */
@@ -254,6 +267,7 @@ input[disabled] + .toggle:hover {
 
 .grid {
     aspect-ratio: 1 / 1;
+    background-color: black;
     background-image: none;
     background-position: center;
     background-repeat: no-repeat;
@@ -272,21 +286,8 @@ input[disabled] + .toggle:hover {
     user-select: none;
 }
 
-.tile:before {
+.tile .tile-overlay {
     background-color: black;
-    content: "";
-    opacity: 0;
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    z-index: 10;
-}
-
-.tile:after {
-    background-color: white;
-    content: "";
     opacity: 0;
     position: absolute;
     top: 0;

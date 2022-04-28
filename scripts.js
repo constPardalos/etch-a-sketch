@@ -17,13 +17,13 @@ const grid = document.querySelector('.grid');
 const gridTiles = [];
 
 // Grid Color
-const storedGridColor = sessionStorage.getItem('lastGridColor');
-let gridColor = (storedGridColor !== null) ? storedGridColor : '#ffffff';
+const sessionGridColor = sessionStorage.getItem('lastGridColor');
+let gridColor = (sessionGridColor !== null) ? sessionGridColor : '#ffffff';
 const gridColorInput = document.querySelector('#grid-color');
 gridColorInput.value = gridColor;
 
 gridColorInput.addEventListener('input', () => {
-    gridColor = gridColorInput.value;
+    gridColor = hexToRGB(gridColorInput.value);
     sessionStorage.setItem('lastGridColor', gridColor);
 });
 
@@ -52,9 +52,9 @@ gridSize.addEventListener('input', () => {
 });
 
 // Active Mode
-const storedMode = sessionStorage.getItem('lastMode');
-let activeMode = (storedMode !== null) ? storedMode : 'classic';
-storedModeButton = document.querySelector(`[data-mode="${activeMode}"]`);
+const sessionMode = sessionStorage.getItem('lastMode');
+let activeMode = (sessionMode !== null) ? sessionMode : 'classic';
+const activeModeButton = document.querySelector(`[data-mode="${activeMode}"]`);
 
 // Mode Buttons
 const modeButtons = Array.from(document.querySelectorAll('.mode-btn'));
@@ -64,10 +64,24 @@ modeButtons.forEach(modeButton => modeButton.addEventListener('click', function(
 
 // Sketch Options
 const sketchOptions = Array.from(document.querySelectorAll('.main-option > input'));
+sketchOptions.forEach((sketchOption, index) => {
+
+    sketchOption.addEventListener('change', ()=> {
+        if (sketchOption.checked) {
+            const currentIndex = index;
+
+            sketchOptions.forEach((sketchOption, index) => {
+                if (index !== currentIndex) {
+                    sketchOption.checked = false;
+                }
+            });
+        }
+    })
+});
+
 const eraser = document.querySelector('#eraser');
-eraser.checked = true;
-const dark = document.querySelector('#dark');
-const light = document.querySelector('#light');
+const shade = document.querySelector('#shade');
+const tint = document.querySelector('#tint');
 const overlay = document.querySelector('#overlay');
 
 const penColor = document.querySelector('#pen-color');
@@ -77,17 +91,10 @@ penColor.addEventListener('input', () => {
     penColorValue.textContent = penColor.value;
 });
 
-function disableSketchOptions() {
-    sketchOptions.forEach(sketchOption => {
-        sketchOption.disabled = true;
-        sketchOption.checked = false;
-    });
-}
-
 let shadeColor;
 
 
-// GRID CREATION
+// GENERATE GRID FUNCTION
 // ========================================================
 
 const gridButton = document.querySelector('.generate');
@@ -101,7 +108,6 @@ function generateGrid(size) {
     grid.style.gridTemplateColumns = `repeat(${size}, 1fr)`;
     grid.style.gridTemplateRows = `repeat(${size}, 1fr)`;
     grid.style.gap = `${gridLines.value}px`;
-    grid.style.backgroundColor = gridColor;
 
     gridTiles.length = 0;
 
@@ -109,18 +115,38 @@ function generateGrid(size) {
         gridTiles.push(document.createElement('div'));
     }
     gridTiles.forEach((tile) => {
-        tile.setAttribute('data-passed', 0);
         tile.classList.add('tile');
-        grid.appendChild(tile);
         tile.addEventListener('mouseover', sketch);
-        tile.style.cssText = 'background-color: transparent; opacity: 1';
+        tile.style.backgroundColor = gridColor;
+        grid.appendChild(tile);
     });
 }
 
 generateGrid(gridSize.value);
-setActiveMode(storedModeButton, activeMode);
+setActiveMode(activeModeButton, activeMode);
 
-// SKETCH MODES
+// CLEAR GRID FUNCTION
+// ========================================================
+
+const clearButton = document.querySelector('.clear');
+clearButton.addEventListener('click', clearGrid)
+
+function clearGrid() {
+    if (activeMode !== 'picture') {
+        grid.style.backgroundImage = 'none';
+        gridTiles.forEach((tile) => {
+            tile.style.backgroundColor = gridColor;
+        });
+    } else {
+        grid.style.backgroundImage = 'none';
+        grid.style.backgroundImage = 'url("https://source.unsplash.com/random")';
+        gridTiles.forEach((tile) => {
+            tile.style.backgroundColor = gridColor;
+        });
+    }
+}
+
+// SET MODE FUNCTION
 // ========================================================
 
 function setActiveMode(button, mode) {
@@ -135,22 +161,21 @@ function setActiveMode(button, mode) {
     disableSketchOptions();
 
     gridTiles.forEach((tile) => {
-        tile.dataset.passed = '0';
         tile.classList.remove('animation');
-        tile.style.cssText = 'background-color: white; opacity: 1;';
+        tile.style.backgroundColor = gridColor;
     });
 
     // Classic mode
     if (mode === 'classic') {
         activeMode = 'classic';
         eraser.disabled = false;
-        overlay.disabled = false;
+        shade.disabled = false;
+        tint.disabled = false;
     }
     // Color mode
     else if (mode === 'color') {
         activeMode = 'color';
-        eraser.disabled = false;
-        overlay.disabled = false;
+        enableSketchOptions();
     }
     // Rainbow mode
     else if (mode === 'rainbow') {
@@ -182,7 +207,7 @@ function setActiveMode(button, mode) {
     sessionStorage.setItem('lastMode', activeMode);
 }
 
-// SKETCH BEHAVIOR
+// SKETCH FUNCTION
 // ========================================================
 
 function sketch() {
@@ -198,19 +223,33 @@ function sketch() {
     // Classic mode
     if (activeMode === 'classic') {
         if (eraser.checked) {
-            this.style.backgroundColor = 'background-color: white;';
+            this.style.backgroundColor = gridColor;
+        } else if (shade.checked) {
+            const currentColor = getRGB(this.style.backgroundColor);
+            this.style.backgroundColor = shadeRGB(currentColor);
+        } else if (tint.checked) {
+            const currentColor = getRGB(this.style.backgroundColor);
+            this.style.backgroundColor = tintRGB(currentColor);
         } else {
-            this.style.cssText = 'background-color: black;';
+            this.style.backgroundColor = 'rgb(0, 0, 0)';
         }
     }
     // Color mode
     else if (activeMode === 'color') {
+        console.log(gridColor);
         if (eraser.checked) {
-            this.style.cssText = 'background-color: white;';
-        } else if (!overlay.checked && this.style.backgroundColor === 'white') {
-            this.style.cssText = `background-color: ${penColor.value};`;
+            this.style.backgroundColor = gridColor;
+        } else if (!overlay.checked && !shade.checked && !tint.checked &&
+            this.style.backgroundColor === gridColor) {
+            this.style.backgroundColor = penColor.value;
+        } else if (shade.checked) {
+            const currentColor = getRGB(this.style.backgroundColor);
+            this.style.backgroundColor = shadeRGB(currentColor);
+        } else if (tint.checked) {
+            const currentColor = getRGB(this.style.backgroundColor);
+            this.style.backgroundColor = tintRGB(currentColor);
         } else if (overlay.checked) {
-            this.style.cssText = `background-color: ${penColor.value};`;
+            this.style.backgroundColor = penColor.value;
         }
     }
     // Rainbow mode
@@ -221,7 +260,7 @@ function sketch() {
         let l = 50;
 
         if (eraser.checked) {
-            this.style.cssText = 'background-color: white;';
+            this.style.backgroundColor = 'transparent';
         } else if (!overlay.checked && currentColor === 'white') {
             this.style.cssText = `background-color: hsl(${h},${s}%,${l}%);`;
         } else if (overlay.checked) {
@@ -271,23 +310,64 @@ function sketch() {
     this.dataset.passed = String(timesPassed);
 }
 
-// CLEAR GRID
+// HELPER FUNCTIONS
 // ========================================================
 
-const clearButton = document.querySelector('.clear');
-clearButton.addEventListener('click', clearGrid)
+function disableSketchOptions() {
+    sketchOptions.forEach(sketchOption => {
+        sketchOption.disabled = true;
+        sketchOption.checked = false;
+    });
+    penColor.disabled = true;
+}
 
-function clearGrid() {
-    if (activeMode !== 'picture') {
-        grid.style.backgroundImage = 'none';
-        gridTiles.forEach((tile) => {
-            tile.style.cssText = 'background-color: transparent; opacity: 1;';
-        });
-    } else {
-        grid.style.backgroundImage = 'none';
-        grid.style.backgroundImage = 'url("https://source.unsplash.com/random")';
-        gridTiles.forEach((tile) => {
-            tile.style.cssText = 'background-color: transparent; opacity: 1;';
-        });
+function enableSketchOptions() {
+    sketchOptions.forEach(sketchOption => {
+        sketchOption.disabled = false;
+        sketchOption.checked = false;
+    });
+    penColor.disabled = false;
+}
+
+function hexToRGB(h) {
+    let r = 0, g = 0, b = 0;
+
+    if (h.length === 4) {
+        r = "0x" + h[1] + h[1];
+        g = "0x" + h[2] + h[2];
+        b = "0x" + h[3] + h[3];
+    } else if (h.length === 7) {
+        r = "0x" + h[1] + h[2];
+        g = "0x" + h[3] + h[4];
+        b = "0x" + h[5] + h[6];
     }
+
+    return "rgb("+ +r + ", " + +g + ", " + +b + ")";
+}
+
+function getRGB(str) {
+    const match = str.match(/rgba?\((\d{1,3}), ?(\d{1,3}), ?(\d{1,3})\)?(?:, ?(\d(?:\.\d?))\))?/);
+    return match;
+}
+
+function shadeRGB(rgb) {
+    const factor = 1/4;
+    let r = parseInt(rgb[1]), g = parseInt(rgb[2]), b = parseInt(rgb[3]);
+
+    r -= (r * factor);
+    g -= (g * factor);
+    b -= (b * factor);
+
+    return `rgb(${Math.floor(r)}, ${Math.floor(g)}, ${Math.floor(b)})`;
+}
+
+function tintRGB(rgb) {
+    const factor = 1/4;
+    let r = parseInt(rgb[1]), g = parseInt(rgb[2]), b = parseInt(rgb[3]);
+
+    r += ((255 - r) * factor);
+    g += ((255 - g) * factor);
+    b += ((255 - b) * factor);
+
+    return `rgb(${Math.floor(r)}, ${Math.floor(g)}, ${Math.floor(b)})`;
 }
