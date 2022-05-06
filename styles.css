@@ -13,10 +13,6 @@ body {
 
 }
 
-header, main, footer {
-    margin: 20px;
-}
-
 .material-symbols-rounded {
     font-variation-settings: 'FILL' 1,
     'wght' 500,
@@ -24,15 +20,34 @@ header, main, footer {
     'opsz' 40
 }
 
-.main-content {
+header, footer {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 150px;
+}
+
+main {
     display: flex;
     align-items: stretch;
     justify-content: center;
-    user-select: none;
+    margin: 20px;
+    position: relative;
+}
+
+.main-content {
+    display: flex;
+    flex-flow: column wrap;
+    justify-content: center;
+    align-items: center;
+    margin: 20px;
+    max-width: 960px;
+    width: 100%;
 }
 
 .logo {
-    margin: 20px auto;
+    margin: 0 auto;
     max-width: 320px;
     width: 100%;
 }
@@ -74,7 +89,10 @@ header, main, footer {
     border-radius: 4px;
     margin: 20px;
     padding: 20px;
+    position: relative;
+    top: 150px;
     max-width: 960px;
+    max-height: 960px;
 }
 
 .settings-section {
@@ -305,12 +323,13 @@ input[disabled] + .toggle:hover {
     display: flex;
     justify-content: center;
     align-items: center;
-    margin: 20px;
     overflow: hidden;
     width: 100%;
     height: auto;
     max-width: 960px;
     max-height: 960px;
+    user-select: none;
+    touch-action: none;
 }
 
 .grid {
@@ -378,30 +397,32 @@ input[disabled] + .toggle:hover {
 }
 
 @media only screen and (max-width: 1280px) {
-    .main-content {
+    main {
         flex-flow: column-reverse;
         align-items: center;
+        justify-content: flex-start;
+        padding-bottom: 100px;
     }
-
     .grid-container {
-        margin: 20px;
+        margin: 0;
     }
-
     .settings {
         display: flex;
         flex-flow: row wrap;
         align-items: flex-start;
         justify-content: space-between;
+        top: 0;
+        max-height: 100%;
         width: 100%;
     }
-
-    .settings-section {
-
-    }
-
     .modes {
         display: flex;
         flex-flow: row wrap;
+    }
+    footer {
+        position: absolute;
+        bottom: 0;
+        height: 100px;
     }
 }
 

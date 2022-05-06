@@ -6,8 +6,9 @@ const copyYear = document.querySelector('.year');
 const currentYear = new Date().getFullYear();
 copyYear.textContent = " " + currentYear + " ";
 
-// Mouse tracking
+// Mouse/touch tracking
 let mouseDown = false;
+let touchEnabled;
 
 window.addEventListener('mousedown', ()=> {
     mouseDown = true;
@@ -15,6 +16,12 @@ window.addEventListener('mousedown', ()=> {
 window.addEventListener('mouseup', ()=> {
     mouseDown = false;
 })
+
+if ("ontouchstart" in document.documentElement) {
+    touchEnabled = true;
+} else {
+    touchEnabled = false;
+}
 
 // Grid
 const grid = document.querySelector('.grid');
@@ -120,7 +127,7 @@ function generateGrid(size) {
     }
     gridTiles.forEach((tile) => {
         tile.classList.add('tile');
-        tile.addEventListener('mouseover', sketch);
+        tile.addEventListener(!touchEnabled ? 'mouseover' : 'touchstart', sketch);
         tile.style.backgroundColor = gridColor;
         grid.appendChild(tile);
     });
@@ -216,7 +223,7 @@ function setActiveMode(button, mode) {
 
 function sketch() {
 
-    if (!mouseDown) {
+    if (!mouseDown && !touchEnabled) {
         return
     }
 
