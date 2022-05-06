@@ -34,7 +34,7 @@ const gridColorInput = document.querySelector('#grid-color');
 gridColorInput.value = gridColor;
 
 gridColorInput.addEventListener('input', () => {
-    gridColor = hexToRGB(gridColorInput.value);
+    gridColor = gridColorInput.value;
     sessionStorage.setItem('lastGridColor', gridColor);
 });
 
@@ -97,12 +97,24 @@ const overlay = document.querySelector('#overlay');
 
 const penColor = document.querySelector('#pen-color');
 const penColorValue = document.querySelector('#pen-color-value');
+let shadeColor = hexToHSL(penColor.value,'h');
 penColorValue.textContent = penColor.value;
 penColor.addEventListener('input', () => {
     penColorValue.textContent = penColor.value;
+    shadeColor = hexToHSL(penColor.value,'h');
 });
 
-let shadeColor;
+// Ghost Mode Animation
+const ghostAnim = [
+    { backgroundColor: gridColor },
+    { backgroundColor: 'black' },
+    { backgroundColor: gridColor }
+];
+
+const ghostAnimDuration = {
+    duration: 1000,
+    iterations: 1,
+}
 
 
 // GENERATE GRID FUNCTION
@@ -131,6 +143,11 @@ function generateGrid(size) {
         tile.style.backgroundColor = gridColor;
         grid.appendChild(tile);
     });
+
+    if (activeMode === 'picture') {
+        grid.style.backgroundImage = 'none';
+        grid.style.backgroundImage = 'url("https://source.unsplash.com/random")';
+    }
 }
 
 generateGrid(gridSize.value);
@@ -171,11 +188,6 @@ function setActiveMode(button, mode) {
 
     disableSketchOptions();
 
-    gridTiles.forEach((tile) => {
-        tile.classList.remove('animation');
-        tile.style.backgroundColor = gridColor;
-    });
-
     // Classic mode
     if (mode === 'classic') {
         activeMode = 'classic';
@@ -203,16 +215,12 @@ function setActiveMode(button, mode) {
         activeMode = 'shades';
         eraser.disabled = false;
         overlay.disabled = false;
-        shadeColor = Math.floor(Math.random() * (360 + 1));
+        penColor.disabled = false;
     }
     // Picture mode
     else if (mode === 'picture') {
         activeMode = 'picture';
-        grid.style.gap = '0';
         grid.style.backgroundImage = 'url("https://source.unsplash.com/random")';
-        gridTiles.forEach((tile) => {
-            tile.style.cssText = 'background-color: black; opacity: 1;';
-        });
     }
 
     sessionStorage.setItem('lastMode', activeMode);
@@ -228,7 +236,6 @@ function sketch() {
     }
 
     // Tile attributes
-    let timesPassed = parseInt(this.dataset.passed);
     const currentColor = this.style.backgroundColor;
 
     // Classic mode
@@ -247,11 +254,10 @@ function sketch() {
     }
     // Color mode
     else if (activeMode === 'color') {
-        console.log(gridColor);
         if (eraser.checked) {
             this.style.backgroundColor = gridColor;
         } else if (!overlay.checked && !shade.checked && !tint.checked &&
-            this.style.backgroundColor === gridColor) {
+            currentColor === hexToRGB(gridColor)) {
             this.style.backgroundColor = penColor.value;
         } else if (shade.checked) {
             const currentColor = getRGB(this.style.backgroundColor);
@@ -265,36 +271,21 @@ function sketch() {
     }
     // Rainbow mode
     else if (activeMode === 'rainbow') {
-
-        const h = Math.floor(Math.random() * (360 + 1));
-        const s = Math.floor(Math.random() * (50 + 1)) + 50;
-        let l = 50;
-
+        const randomColor = randomRGB();
         if (eraser.checked) {
-            this.style.backgroundColor = 'transparent';
-        } else if (!overlay.checked && currentColor === 'white') {
-            this.style.cssText = `background-color: hsl(${h},${s}%,${l}%);`;
+            this.style.backgroundColor = gridColor;
+        } else if (!overlay.checked && currentColor === hexToRGB(gridColor)) {
+            this.style.backgroundColor = randomColor;
         } else if (overlay.checked) {
-            this.style.cssText = `background-color: hsl(${h},${s}%,${l}%);`;
+            this.style.backgroundColor = randomColor;
         }
     }
     // Ghost mode
     else if (activeMode === 'ghost') {
-        if (!eraser.checked && this.style.backgroundColor !== 'black') {
-            this.classList.add('light-animation');
-            setTimeout(() => {
-                this.classList.remove('light-animation');
-            }, 2000)
-        } else if (eraser.checked && this.style.backgroundColor !== 'white') {
-            this.classList.add('dark-animation');
-            setTimeout(() => {
-                this.classList.remove('dark-animation');
-            }, 2000)
-        }
+        this.animate(ghostAnim, ghostAnimDuration);
     }
     // Shades mode
     else if (activeMode === 'shades') {
-        const h = shadeColor;
         const s = 100;
         let l = Math.floor(Math.random() * (100 + 1));
 
@@ -305,20 +296,17 @@ function sketch() {
         }
 
         if (eraser.checked) {
-            this.style.cssText = 'background-color: white;';
-        } else if (!overlay.checked && this.style.backgroundColor === 'white') {
-            this.style.cssText = `background-color: hsl(${h},${s}%,${l}%);`;
+            this.style.backgroundColor = gridColor;
+        } else if (!overlay.checked && currentColor === hexToRGB(gridColor)) {
+            this.style.backgroundColor = `hsl(${shadeColor},${s}%,${l}%)`;
         } else if (overlay.checked) {
-            this.style.cssText = `background-color: hsl(${h},${s}%,${l}%);`;
+            this.style.backgroundColor = `hsl(${shadeColor},${s}%,${l}%)`;
         }
     }
     // Picture mode
     else if (activeMode === 'picture') {
-        this.style.cssText = `opacity: 0;`;
+        this.style.backgroundColor = `transparent`;
     }
-
-    timesPassed += 1;
-    this.dataset.passed = String(timesPassed);
 }
 
 // HELPER FUNCTIONS
@@ -340,7 +328,7 @@ function enableSketchOptions() {
     penColor.disabled = false;
 }
 
-function hexToRGB(h) {
+function hexToRGB(h) { // https://css-tricks.com/converting-color-spaces-in-javascript/
     let r = 0, g = 0, b = 0;
 
     if (h.length === 4) {
@@ -354,6 +342,59 @@ function hexToRGB(h) {
     }
 
     return "rgb("+ +r + ", " + +g + ", " + +b + ")";
+}
+
+function hexToHSL(hex,part) { // https://css-tricks.com/converting-color-spaces-in-javascript/
+    let r = 0, g = 0, b = 0;
+    if (hex.length === 4) {
+        r = "0x" + hex[1] + hex[1];
+        g = "0x" + hex[2] + hex[2];
+        b = "0x" + hex[3] + hex[3];
+    } else if (hex.length === 7) {
+        r = "0x" + hex[1] + hex[2];
+        g = "0x" + hex[3] + hex[4];
+        b = "0x" + hex[5] + hex[6];
+    }
+
+    r /= 255;
+    g /= 255;
+    b /= 255;
+    let cmin = Math.min(r,g,b),
+        cmax = Math.max(r,g,b),
+        delta = cmax - cmin,
+        h = 0,
+        s = 0,
+        l = 0;
+
+    if (delta === 0)
+        h = 0;
+    else if (cmax === r)
+        h = ((g - b) / delta) % 6;
+    else if (cmax === g)
+        h = (b - r) / delta + 2;
+    else
+        h = (r - g) / delta + 4;
+
+    h = Math.round(h * 60);
+
+    if (h < 0)
+        h += 360;
+
+    l = (cmax + cmin) / 2;
+    s = delta === 0 ? 0 : delta / (1 - Math.abs(2 * l - 1));
+    s = +(s * 100).toFixed(1);
+    l = +(l * 100).toFixed(1);
+
+    if (part === 'h') {
+        return h;
+    } else if (part === 's') {
+        return s;
+    } else if (part === 'l') {
+        return l;
+    } else {
+        return "hsl(" + h + "," + s + "%," + l + "%)";
+    }
+
 }
 
 function getRGB(str) {
@@ -380,4 +421,10 @@ function tintRGB(rgb) {
     b += ((255 - b) * factor);
 
     return `rgb(${Math.floor(r)}, ${Math.floor(g)}, ${Math.floor(b)})`;
+}
+
+function randomRGB() {
+    return `rgb(${Math.floor(Math.random() * (255 + 1))}, 
+    ${Math.floor(Math.random() * (255 + 1))}, 
+    ${Math.floor(Math.random() * (255 + 1))})`;
 }

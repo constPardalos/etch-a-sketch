@@ -353,49 +353,6 @@ input[disabled] + .toggle:hover {
     user-select: none;
 }
 
-.tile .tile-overlay {
-    background-color: black;
-    opacity: 0;
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    z-index: 10;
-}
-
-.tile.dark-animation {
-    animation: black-to-white 2s;
-}
-
-.tile.light-animation {
-    animation: white-to-black 2s;
-}
-
-@keyframes white-to-black {
-    0% {
-        background-color: white;
-    }
-    50% {
-        background-color: black;
-    }
-    100% {
-        background-color: white;
-    }
-}
-
-@keyframes black-to-white {
-    0% {
-        background-color: black;
-    }
-    50% {
-        background-color: white;
-    }
-    100% {
-        background-color: black;
-    }
-}
-
 @media only screen and (max-width: 1280px) {
     main {
         flex-flow: column-reverse;
