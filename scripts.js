@@ -33,11 +33,6 @@ let gridColor = (sessionGridColor !== null) ? sessionGridColor : '#ffffff';
 const gridColorInput = document.querySelector('#grid-color');
 gridColorInput.value = gridColor;
 
-gridColorInput.addEventListener('input', () => {
-    gridColor = gridColorInput.value;
-    sessionStorage.setItem('lastGridColor', gridColor);
-});
-
 // Grid Lines
 const gridLines = document.querySelector('#grid-lines');
 const sessionGridLines = sessionStorage.getItem('lastGridLines');
@@ -135,6 +130,8 @@ function generateGrid(size) {
     grid.style.gridTemplateColumns = `repeat(${size}, 1fr)`;
     grid.style.gridTemplateRows = `repeat(${size}, 1fr)`;
     grid.style.gap = `${gridLines.value}px`;
+    gridColor = gridColorInput.value;
+    sessionStorage.setItem('lastGridColor', gridColor);
 
     gridTiles.length = 0;
 
@@ -231,6 +228,7 @@ function setActiveMode(button, mode) {
     // Picture mode
     else if (mode === 'picture') {
         activeMode = 'picture';
+        eraser.disabled = false;
         pictureWidth = pictureWidth === grid.offsetWidth ? grid.offsetWidth + 1 : grid.offsetWidth;
         grid.style.backgroundImage = `url("https://picsum.photos/${pictureWidth}")`;
     }
@@ -321,7 +319,11 @@ function sketch(e) {
     }
     // Picture mode
     else if (activeMode === 'picture') {
-        this.style.backgroundColor = `transparent`;
+        if (eraser.checked) {
+            this.style.backgroundColor = gridColor;
+        } else {
+            this.style.backgroundColor = `transparent`;
+        }
     }
 }
 
