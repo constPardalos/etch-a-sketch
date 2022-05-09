@@ -8,7 +8,7 @@ copyYear.textContent = " " + currentYear + " ";
 
 // Mouse/touch tracking
 let mouseDown = false;
-let touchEnabled;
+let touchEnabled = "ontouchstart" in document.documentElement;
 
 window.addEventListener('mousedown', ()=> {
     mouseDown = true;
@@ -16,12 +16,12 @@ window.addEventListener('mousedown', ()=> {
 window.addEventListener('mouseup', ()=> {
     mouseDown = false;
 })
-
-if ("ontouchstart" in document.documentElement) {
-    touchEnabled = true;
-} else {
-    touchEnabled = false;
-}
+window.addEventListener('touchstart', ()=> {
+    mouseDown = true;
+})
+window.addEventListener('touchend', ()=> {
+    mouseDown = false;
+})
 
 // Grid
 const grid = document.querySelector('.grid');
@@ -105,7 +105,7 @@ penColor.addEventListener('input', () => {
 });
 
 // Ghost Mode Animation
-const ghostAnim = [
+let ghostAnim = [
     { backgroundColor: gridColor },
     { backgroundColor: 'black' },
     { backgroundColor: gridColor }
@@ -139,15 +139,22 @@ function generateGrid(size) {
     }
     gridTiles.forEach((tile) => {
         tile.classList.add('tile');
-        tile.addEventListener(!touchEnabled ? 'mouseover' : 'touchstart', sketch);
+        tile.addEventListener(!touchEnabled ? 'mouseover' : 'touchmove', sketch);
+        tile.addEventListener(!touchEnabled ? 'mousedown' : 'touchstart', sketch);
         tile.style.backgroundColor = gridColor;
         grid.appendChild(tile);
     });
 
     if (activeMode === 'picture') {
         grid.style.backgroundImage = 'none';
-        grid.style.backgroundImage = 'url("https://source.unsplash.com/random")';
+        grid.style.backgroundImage = 'url("https://picsum.photos/960")';
     }
+
+    ghostAnim = [
+        { backgroundColor: gridColor },
+        { backgroundColor: 'black' },
+        { backgroundColor: gridColor }
+    ];
 }
 
 generateGrid(gridSize.value);
@@ -167,7 +174,7 @@ function clearGrid() {
         });
     } else {
         grid.style.backgroundImage = 'none';
-        grid.style.backgroundImage = 'url("https://source.unsplash.com/random")';
+        grid.style.backgroundImage = 'url("https://picsum.photos/960")';
         gridTiles.forEach((tile) => {
             tile.style.backgroundColor = gridColor;
         });
@@ -220,7 +227,7 @@ function setActiveMode(button, mode) {
     // Picture mode
     else if (mode === 'picture') {
         activeMode = 'picture';
-        grid.style.backgroundImage = 'url("https://source.unsplash.com/random")';
+        grid.style.backgroundImage = 'url("https://picsum.photos/960")';
     }
 
     sessionStorage.setItem('lastMode', activeMode);
@@ -229,9 +236,13 @@ function setActiveMode(button, mode) {
 // SKETCH FUNCTION
 // ========================================================
 
-function sketch() {
+function sketch(e) {
 
-    if (!mouseDown && !touchEnabled) {
+    if (e.type === 'mouseover' && !mouseDown && !touchEnabled) {
+        return
+    }
+
+    if (e.type === 'touchmove' && !mouseDown && touchEnabled) {
         return
     }
 

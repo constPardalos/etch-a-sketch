@@ -347,7 +347,7 @@ input[disabled] + .toggle:hover {
 }
 
 .tile {
-    cursor: default;
+    cursor: pointer;
     flex-basis: auto;
     position: relative;
     user-select: none;
