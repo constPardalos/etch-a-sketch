@@ -116,6 +116,10 @@ const ghostAnimDuration = {
     iterations: 1,
 }
 
+// Picture
+let pictureWidth = grid.offsetWidth;
+console.log(pictureWidth);
+
 
 // GENERATE GRID FUNCTION
 // ========================================================
@@ -146,8 +150,8 @@ function generateGrid(size) {
     });
 
     if (activeMode === 'picture') {
-        grid.style.backgroundImage = 'none';
-        grid.style.backgroundImage = 'url("https://picsum.photos/960")';
+        pictureWidth = pictureWidth === grid.offsetWidth ? grid.offsetWidth + 1 : grid.offsetWidth;
+        grid.style.backgroundImage = `url("https://picsum.photos/${pictureWidth}")`;
     }
 
     ghostAnim = [
@@ -173,8 +177,8 @@ function clearGrid() {
             tile.style.backgroundColor = gridColor;
         });
     } else {
-        grid.style.backgroundImage = 'none';
-        grid.style.backgroundImage = 'url("https://picsum.photos/960")';
+        pictureWidth = pictureWidth === grid.offsetWidth ? grid.offsetWidth + 1 : grid.offsetWidth;
+        grid.style.backgroundImage = `url("https://picsum.photos/${pictureWidth}")`;
         gridTiles.forEach((tile) => {
             tile.style.backgroundColor = gridColor;
         });
@@ -227,7 +231,8 @@ function setActiveMode(button, mode) {
     // Picture mode
     else if (mode === 'picture') {
         activeMode = 'picture';
-        grid.style.backgroundImage = 'url("https://picsum.photos/960")';
+        pictureWidth = pictureWidth === grid.offsetWidth ? grid.offsetWidth + 1 : grid.offsetWidth;
+        grid.style.backgroundImage = `url("https://picsum.photos/${pictureWidth}")`;
     }
 
     sessionStorage.setItem('lastMode', activeMode);

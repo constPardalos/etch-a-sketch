@@ -34,6 +34,7 @@ main {
     justify-content: center;
     margin: 20px;
     position: relative;
+    user-select: none;
 }
 
 .main-content {
@@ -320,6 +321,7 @@ input[disabled] + .toggle:hover {
 
 .grid-container {
     border-radius: 4px;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
     display: flex;
     justify-content: center;
     align-items: center;
