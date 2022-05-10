@@ -13,99 +13,101 @@
 </head>
 <body>
 
+<main class="main-content">
+    <header>
+        <img alt="Etch-A-Sketch Logo" class="logo" src="assets/etch-a-sketch-logo.svg">
+    </header>
 
-<main>
+    <div class="grid-container">
+        <div class="grid"></div>
+    </div>
+
     <div class="settings">
-        <div class="settings-section modes">
-            <h2>Modes</h2>
-            <button class="mode-btn" data-mode="classic">Classic</button>
-            <button class="mode-btn" data-mode="color">Color</button>
-            <button class="mode-btn" data-mode="rainbow">Rainbow</button>
-            <button class="mode-btn" data-mode="shades">Shades</button>
-            <button class="mode-btn" data-mode="ghost">Ghost</button>
-            <button class="mode-btn" data-mode="picture">Picture</button>
+        <div class="settings-group settings-left">
+            <div class="settings-section modes">
+                <h2>Modes</h2>
+                <button class="mode-btn" data-mode="classic">Classic</button>
+                <button class="mode-btn" data-mode="color">Color</button>
+                <button class="mode-btn" data-mode="rainbow">Rainbow</button>
+                <button class="mode-btn" data-mode="shades">Shades</button>
+                <button class="mode-btn" data-mode="ghost">Ghost</button>
+                <button class="mode-btn" data-mode="picture">Picture</button>
+            </div>
         </div>
 
-        <div class="settings-section options">
-            <h2>Sketch Options</h2>
-            <div class="main-options">
-                <label class="main-option">
-                    <input id="eraser" name="sketch-options" type="checkbox">
-                    <span class="toggle material-symbols-rounded">edit_off</span>
-                </label>
-                <label class="main-option">
-                    <input id="shade" name="sketch-options" type="checkbox">
-                    <span class="toggle material-symbols-rounded">dark_mode</span>
-                </label>
-                <label class="main-option">
-                    <input id="tint" name="sketch-options" type="checkbox">
-                    <span class="toggle material-symbols-rounded">light_mode</span>
-                </label>
-                <label class="main-option">
-                    <input id="overlay" name="sketch-options" type="checkbox">
-                    <span class="toggle material-symbols-rounded">layers</span>
-                </label>
-            </div>
-            <div class="mode-options">
-                <div class="color-picker-container">
-                    <input class="color-picker" id="pen-color" name="pen-color" type="color">
-                    <label class="color-value" for="pen-color" id="pen-color-value"></label>
+        <div class="settings-group settings-right">
+            <div class="settings-section options">
+                <h2>Sketch Options</h2>
+                <div class="main-options">
+                    <label class="main-option">
+                        <input id="eraser" name="sketch-options" type="checkbox">
+                        <span class="toggle material-symbols-rounded">edit_off</span>
+                    </label>
+                    <label class="main-option">
+                        <input id="shade" name="sketch-options" type="checkbox">
+                        <span class="toggle material-symbols-rounded">dark_mode</span>
+                    </label>
+                    <label class="main-option">
+                        <input id="tint" name="sketch-options" type="checkbox">
+                        <span class="toggle material-symbols-rounded">light_mode</span>
+                    </label>
+                    <label class="main-option">
+                        <input id="overlay" name="sketch-options" type="checkbox">
+                        <span class="toggle material-symbols-rounded">layers</span>
+                    </label>
                 </div>
+                <div class="mode-options">
+                    <div class="color-picker-container">
+                        <input class="color-picker" id="pen-color" name="pen-color" type="color">
+                        <label class="color-value" for="pen-color" id="pen-color-value"></label>
+                    </div>
 
+                </div>
             </div>
-        </div>
 
-        <div class="settings-section grid-options">
-            <h2>Grid Settings</h2>
-            <div class="grid-options-container">
-                <label class="label" for="grid-color">Color: </label>
-                <input class="color-picker" id="grid-color" name="grid-color" type="color">
-            </div>
-            <div class="grid-options-container">
-                <span class="label">Border: </span>
-                <label class="slider-container">
-                    <input class="slider" id="grid-lines" max="3" min="0" step="1" type="range" value="0">
-                    <span class="slider-value" id="grid-lines-value">0</span>
-                </label>
-            </div>
-            <div class="grid-options-container">
-                <span class="label">Size: </span>
-                <label class="slider-container">
-                    <input class="slider" id="grid-size" max="64" min="2" step="1" type="range" value="16">
-                    <span class="slider-value" id="grid-size-value">16</span>
-                </label>
-            </div>
-            <div class="grid-options-container">
-                <button class="generate">Generate</button>
-                <button class="clear">Clear</button>
+            <div class="settings-section grid-options">
+                <h2>Grid Settings</h2>
+                <div class="grid-options-container">
+                    <label class="label" for="grid-color">Color: </label>
+                    <input class="color-picker" id="grid-color" name="grid-color" type="color">
+                </div>
+                <div class="grid-options-container">
+                    <span class="label">Gap: </span>
+                    <label class="slider-container">
+                        <input class="slider" id="grid-lines" max="3" min="0" step="1" type="range" value="0">
+                        <span class="slider-value" id="grid-lines-value">0</span>
+                    </label>
+                </div>
+                <div class="grid-options-container">
+                    <span class="label">Size: </span>
+                    <label class="slider-container">
+                        <input class="slider" id="grid-size" max="64" min="2" step="1" type="range" value="16">
+                        <span class="slider-value" id="grid-size-value">16</span>
+                    </label>
+                </div>
+                <div class="grid-options-container">
+                    <button class="generate">Generate</button>
+                    <button class="clear">Clear</button>
+                </div>
             </div>
         </div>
     </div>
 
-    <div class="main-content">
-        <header>
-            <img alt="Etch-A-Sketch Logo" class="logo" src="assets/etch-a-sketch-logo.svg">
-        </header>
-        <div class="grid-container">
-            <div class="grid"></div>
-        </div>
-        <footer>
-            <div class="copy">Copyright© <span class="year"></span> | theColorDude
-                <a href="https://github.com/theColorDude" target="_blank">
-                    <svg viewBox="0 0 32.58 31.77" xmlns="http://www.w3.org/2000/svg">
-                        <g data-name="Layer 2" id="Layer_2">
-                            <g data-name="Layer 1" id="Layer_1-2">
-                                <path class="cls-1"
-                                      d="M16.29,0a16.29,16.29,0,0,0-5.15,31.75c.82.15,1.11-.36,1.11-.79s0-1.41,0-2.77C7.7,29.18,6.74,26,6.74,26a4.36,4.36,0,0,0-1.81-2.39c-1.47-1,.12-1,.12-1a3.43,3.43,0,0,1,2.49,1.68,3.48,3.48,0,0,0,4.74,1.36,3.46,3.46,0,0,1,1-2.18c-3.62-.41-7.42-1.81-7.42-8a6.3,6.3,0,0,1,1.67-4.37,5.94,5.94,0,0,1,.16-4.31s1.37-.44,4.48,1.67a15.41,15.41,0,0,1,8.16,0c3.11-2.11,4.47-1.67,4.47-1.67A5.91,5.91,0,0,1,25,11.07a6.3,6.3,0,0,1,1.67,4.37c0,6.26-3.81,7.63-7.44,8a3.85,3.85,0,0,1,1.11,3c0,2.18,0,3.94,0,4.47s.29.94,1.12.78A16.29,16.29,0,0,0,16.29,0Z"/>
-                            </g>
+    <footer>
+        <div class="copy">Copyright© <span class="year"></span> | theColorDude
+            <a href="https://github.com/theColorDude" target="_blank">
+                <svg viewBox="0 0 32.58 31.77" xmlns="http://www.w3.org/2000/svg">
+                    <g data-name="Layer 2" id="Layer_2">
+                        <g data-name="Layer 1" id="Layer_1-2">
+                            <path class="cls-1"
+                                  d="M16.29,0a16.29,16.29,0,0,0-5.15,31.75c.82.15,1.11-.36,1.11-.79s0-1.41,0-2.77C7.7,29.18,6.74,26,6.74,26a4.36,4.36,0,0,0-1.81-2.39c-1.47-1,.12-1,.12-1a3.43,3.43,0,0,1,2.49,1.68,3.48,3.48,0,0,0,4.74,1.36,3.46,3.46,0,0,1,1-2.18c-3.62-.41-7.42-1.81-7.42-8a6.3,6.3,0,0,1,1.67-4.37,5.94,5.94,0,0,1,.16-4.31s1.37-.44,4.48,1.67a15.41,15.41,0,0,1,8.16,0c3.11-2.11,4.47-1.67,4.47-1.67A5.91,5.91,0,0,1,25,11.07a6.3,6.3,0,0,1,1.67,4.37c0,6.26-3.81,7.63-7.44,8a3.85,3.85,0,0,1,1.11,3c0,2.18,0,3.94,0,4.47s.29.94,1.12.78A16.29,16.29,0,0,0,16.29,0Z"/>
                         </g>
-                    </svg>
-                </a>
-            </div>
-        </footer>
-    </div>
+                    </g>
+                </svg>
+            </a>
+        </div>
+    </footer>
 </main>
-
 
 </body>
 </html>

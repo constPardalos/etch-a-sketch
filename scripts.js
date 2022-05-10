@@ -113,15 +113,12 @@ const ghostAnimDuration = {
 
 // Picture
 let pictureWidth = grid.offsetWidth;
-console.log(pictureWidth);
-
 
 // GENERATE GRID FUNCTION
 // ========================================================
 
 const gridButton = document.querySelector('.generate');
 gridButton.addEventListener('click', () => {
-    generateGrid(0);
     generateGrid(gridSize.value);
 });
 
@@ -147,7 +144,7 @@ function generateGrid(size) {
     });
 
     if (activeMode === 'picture') {
-        pictureWidth = pictureWidth === grid.offsetWidth ? grid.offsetWidth + 1 : grid.offsetWidth;
+        pictureWidth = pictureWidth === grid.offsetWidth ? grid.offsetWidth + 10 : grid.offsetWidth;
         grid.style.backgroundImage = `url("https://picsum.photos/${pictureWidth}")`;
     }
 
@@ -168,14 +165,14 @@ const clearButton = document.querySelector('.clear');
 clearButton.addEventListener('click', clearGrid)
 
 function clearGrid() {
-    if (activeMode !== 'picture') {
-        grid.style.backgroundImage = 'none';
+    if (activeMode === 'picture') {
+        pictureWidth = pictureWidth === grid.offsetWidth ? grid.offsetWidth + 10 : grid.offsetWidth;
+        grid.style.backgroundImage = `url("https://picsum.photos/${pictureWidth}")`;
         gridTiles.forEach((tile) => {
             tile.style.backgroundColor = gridColor;
         });
     } else {
-        pictureWidth = pictureWidth === grid.offsetWidth ? grid.offsetWidth + 1 : grid.offsetWidth;
-        grid.style.backgroundImage = `url("https://picsum.photos/${pictureWidth}")`;
+        grid.style.backgroundImage = 'none';
         gridTiles.forEach((tile) => {
             tile.style.backgroundColor = gridColor;
         });
@@ -229,7 +226,7 @@ function setActiveMode(button, mode) {
     else if (mode === 'picture') {
         activeMode = 'picture';
         eraser.disabled = false;
-        pictureWidth = pictureWidth === grid.offsetWidth ? grid.offsetWidth + 1 : grid.offsetWidth;
+        pictureWidth = pictureWidth === grid.offsetWidth ? grid.offsetWidth + 10 : grid.offsetWidth;
         grid.style.backgroundImage = `url("https://picsum.photos/${pictureWidth}")`;
     }
 
