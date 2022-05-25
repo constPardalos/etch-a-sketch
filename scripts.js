@@ -2,10 +2,6 @@
 // INITIATORS & SETTINGS
 // ========================================================
 
-const copyYear = document.querySelector('.year');
-const currentYear = new Date().getFullYear();
-copyYear.textContent = " " + currentYear + " ";
-
 // Mouse/touch tracking
 let mouseDown = false;
 let touchEnabled = "ontouchstart" in document.documentElement;
