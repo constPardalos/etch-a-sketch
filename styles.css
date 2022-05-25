@@ -46,31 +46,31 @@ header, footer {
     width: 100%;
 }
 
-.copy {
+.author {
     display: flex;
     align-items: center;
     justify-content: center;
 }
 
-.copy .year {
-    display: inline-block;
-    margin: 0 0.25em;
-}
-
-.copy a {
-    margin-left: 10px;
-    width: 24px;
+.author a {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    color: #ffffff;
     height: 24px;
+    text-decoration: none;
 }
 
-.copy a svg {
+.author a svg {
+    flex-shrink: 0;
     fill: #fff;
     max-width: 24px;
     height: 24px;
     transition: all 0.2s linear;
 }
 
-.copy a:hover svg {
+.author a:hover svg {
     fill: #26b7a6;
     transform: scale(1.1);
 }
