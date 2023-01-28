@@ -1,6 +1,6 @@
 # <img src="assets/favicon.png" width="22"/> Etch-A-Sketch
 
-[Live Demo](https://thecolordude.github.io/etch-a-sketch/)
+[Live Demo](https://constPardalos.github.io/etch-a-sketch/)
 
 ## Description
 
